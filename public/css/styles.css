@@ -1,5 +1,7 @@
-/******* Base Styles **************/
-*, *::before, *::after {
+/******* Change Box Model ***************/
+*,
+*:before,
+*:after {
   box-sizing: border-box;
 }
 
