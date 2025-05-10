@@ -1,0 +1,45 @@
+<div class="cse-motors">
+    <h1>CSE Motors</h1>
+    
+    <table class="vehicle-table">
+        <tr>
+            <th>Name</th>
+            <th>Custom</th>
+            <th>Sedan</th>
+            <th>SUV</th>
+            <th>Truck</th>
+        </tr>
+        <tr>
+            <td colspan="5">Welcome to CSE Motors!</td>
+        </tr>
+    </table>
+
+    <h2><%= vehicle.name %></h2>
+    <ul class="features">
+        <% vehicle.features.forEach(feature => { %>
+            <li><%= feature %></li>
+        <% }); %>
+    </ul>
+    
+    <h3>Own Today</h3>
+    <hr>
+
+    <h2><%= vehicle.name %> Upgrades</h2>
+    <div class="upgrades">
+        <% vehicle.upgrades.forEach(upgradeGroup => { %>
+            <ul>
+                <% upgradeGroup.forEach(upgrade => { %>
+                    <li><%= upgrade %></li>
+                <% }); %>
+            </ul>
+        <% }); %>
+    </div>
+    <hr>
+
+    <h2><%= vehicle.name %> Reviews</h2>
+    <ul class="reviews">
+        <% vehicle.reviews.forEach(review => { %>
+            <li>"<%= review.text %>" (<%= review.rating %>)</li>
+        <% }); %>
+    </ul>
+</div>
