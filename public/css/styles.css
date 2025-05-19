@@ -79,8 +79,8 @@ h2{
 }
 
 .hero-image {
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    height: 90%;
 }
 
 .hero-image img {
@@ -93,7 +93,7 @@ h2{
     position: absolute;
     bottom: 20px;
     left: 20px;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.839);
     padding: 20px;
     border-radius: 10px;
     max-width: 50%;
