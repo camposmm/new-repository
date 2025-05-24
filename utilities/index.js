@@ -32,14 +32,14 @@ Util.buildClassificationGrid = async function(data) {
     grid = '<ul id="inv-display">';
     data.forEach(vehicle => {
       grid += '<li>';
-      grid += `<a href="/inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} details"><img src="${vehicle.inv_thumbnail}" alt=" ${vehicle.inv_model} on CSE Motors" /></a>`;
+      grid += `<a href="/inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} details">`;
+      grid += `<img src="${vehicle.inv_thumbnail}" alt="" />`; // alt="" since text describes it
       grid += '<div class="namePrice">';
       grid += '<hr />';
-      grid += '<h2>';
-      grid += `<a href="/inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} details"> ${vehicle.inv_model}</a>`;
-      grid += '</h2>';
+      grid += `<h2>${vehicle.inv_model}</h2>`; // No nested <a> here
       grid += `<span>$${new Intl.NumberFormat('en-US').format(vehicle.inv_price)}</span>`;
       grid += '</div>';
+      grid += '</a>';
       grid += '</li>';
     });
     grid += '</ul>';
