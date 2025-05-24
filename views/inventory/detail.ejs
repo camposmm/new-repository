@@ -1,0 +1,58 @@
+<!-- EJS -->
+<% if (title) { %>
+<title><%= title %></title>
+<h1><%= title %></h1>
+<% } else {
+  res.redirect('/')
+} %>
+
+<%# messages() %>
+
+<!-- HTML -->
+<div class="vehicle-detail-wrapper">
+  <%- grid %>
+</div>
+
+<!-- CSS for responsive layout -->
+<style>
+  .vehicle-detail-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 1rem 0;
+  }
+  
+  .vehicle-image-container img {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+  }
+  
+  .vehicle-info-container {
+    padding: 1rem 0;
+  }
+  
+  .detail-price {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+    margin: 1rem 0;
+  }
+  
+  /* Media query for larger screens */
+  @media screen and (min-width: 768px) {
+    .vehicle-detail-container {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+    
+    .vehicle-image-container {
+      flex: 1;
+    }
+    
+    .vehicle-info-container {
+      flex: 1;
+      padding: 0 1rem;
+    }
+  }
+</style>

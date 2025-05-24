@@ -56,4 +56,35 @@ Util.buildClassificationGrid = async function(data) {
  **************************************** */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
+/* **************************************
+* Build the inventory detail view HTML
+* ************************************ */
+Util.buildInventoryDetailHTML = async function(vehicle) {
+  let detailHTML = '';
+  if (vehicle) {
+    // Format price and mileage
+    const formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(vehicle.inv_price);
+    const formattedMileage = new Intl.NumberFormat('en-US').format(vehicle.inv_miles);
+
+    detailHTML = `
+      <div class="vehicle-detail-container"> 
+        <div class="vehicle-image-container">
+          <img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">
+        </div>
+        <div class="vehicle-info-container">
+          <h2>${vehicle.inv_make} ${vehicle.inv_model} Details</h2>
+          <p class="detail-price"><strong>Price:</strong> ${formattedPrice}</p>
+          <p><strong>Description:</strong> ${vehicle.inv_description}</p>
+          <p><strong>Color:</strong> ${vehicle.inv_color}</p>
+          <p class="detail-mileage"><strong>Mileage:</strong> ${formattedMileage}</p>
+          <p><strong>Year:</strong> ${vehicle.inv_year}</p> 
+        </div>
+      </div>
+    `;
+  } else {
+    detailHTML = '<p class="notice">Sorry, vehicle details could not be found.</p>';
+  }
+  return detailHTML;
+}
+
 module.exports = Util;
