@@ -10,13 +10,14 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  color: #333; /* Default text color for better contrast */
 }
 
 #wrapper {
   background-color: white;
   max-width: 800px;
   margin: auto;
-  border: 2px solid #00bcd4;
+  border: 2px solid #007a8a; /* Darker teal for better visibility */
   padding: 1rem;
 }
 
@@ -30,13 +31,13 @@ header, nav, footer {
   font-weight: bold;
   font-size: 1.2rem;
   text-decoration: none;
-  color: black;
+  color: #222; /* Darker for contrast */
 }
 
 #tools a {
   font-size: 0.9rem;
   text-decoration: none;
-  color: black;
+  color: #222; /* Darker for contrast */
 }
 
 nav ul {
@@ -59,72 +60,76 @@ nav li a {
 h1 {
   font-size: 1.5rem;
   margin-top: 1rem;
-}
-h2{
-  color: #00bcd4;
-}
-.highlight {
-  color: #00bcd4;
-  font-weight: bold;
-  background: transparent;
+  color: #007a8a; /* Darker teal */
 }
 
-/* Hero Section Styles */
+h2 {
+  color: #007a8a; /* Darker teal (was #00bcd4) - now 4.5:1 on white */
+}
+
+.highlight {
+  color: #007a8a; /* Darker teal */
+  font-weight: bold;
+}
+
+/* Hero Section */
 .hero {
-    position: relative;
-    width: 100%;
-    height: 400px; /* Adjust as needed */
-    margin: 2rem 0;
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 400px;
+  margin: 2rem 0;
+  overflow: hidden;
 }
 
 .hero-image {
-    width: 90%;
-    height: 90%;
+  width: 90%;
+  height: 90%;
 }
 
 .hero-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .hero-content {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    background-color: rgba(255, 255, 255, 0.839);
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 50%;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background-color: rgba(0, 0, 0, 0.7); /* Dark overlay for contrast */
+  color: white; /* High-contrast text */
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 50%;
 }
 
-/* Keep your existing .highlight and .cta-button styles */
 .cta-button {
-  background-color: #00bcd4;
-  color: black;
+  background-color: #007a8a; /* Darker teal */
+  color: white; /* Changed from black for better contrast */
   text-decoration: none;
   padding: 0.5rem 1rem;
   display: inline-block;
   margin-top: 1rem;
   font-weight: bold;
+  border-radius: 4px;
 }
 
+/* Grid Sections */
 .grid-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.2rem; /* spacing between the columns */
+  gap: 0.2rem;
 }
 
 .upgrades, .reviews {
-  flex: 6;            /* Both take equal width */
-  max-width: 60%;     /* Keeps spacing nice */
+  flex: 6;
+  max-width: 60%;
 }
-.reviews-grid{
+
+.reviews-grid {
   display: grid;
   gap: 10rem;
 }
-
 
 .upgrade-grid {
   display: grid;
@@ -138,27 +143,71 @@ h2{
 }
 
 .upgrade-box {
-    background: #00bcd4;
-    border-radius: 6px;
-    padding: 15px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
+  background: #007a8a; /* Darker teal */
+  color: white; /* High contrast */
+  border-radius: 6px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
 .upgrade-grid a {
   display: block;
   text-align: center;
   text-decoration: underline;
   margin-top: 0.25rem;
-  color: #000;
+  color: #006400; /* Dark green for contrast */
 }
 
 .upgrade-grid a:hover {
-  color: #00bcd4;
+  color: #004d00; /* Darker green on hover */
   text-decoration: none;
 }
 
+/******* Vehicle Grid Styles *******/
+#inv-display {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+#inv-display li {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  background: white;
+}
+
+#inv-display h2 {
+  color: #222; /* Dark gray for contrast */
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+}
+
+#inv-display span {
+  color: #006400; /* Dark green for price */
+  font-weight: bold;
+}
+
+#inv-display a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+#inv-display img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Footer */
 footer {
   text-align: center;
   padding: 1rem;
   font-size: 0.9rem;
+  color: #333; /* Dark gray */
+  background: white;
+  border-top: 1px solid #ddd;
 }
