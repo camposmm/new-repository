@@ -1,0 +1,16 @@
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8 text-center">
+            <h1 class="text-4xl font-bold text-red-600 mb-6"><%= title %></h1>
+            <div class="text-xl text-gray-700 mb-8">
+                <%- message %>
+            </div>
+            <% if (typeof statusCode !== 'undefined' && statusCode) { %>
+              <div class="mb-8">
+                <img src="https://http.cat/<%= statusCode %>" alt="Error cat" class="mx-auto rounded-lg shadow-sm max-h-96">
+            </div>
+            <% } %>
+            <a href="/" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition duration-200">
+                ← Back to Safety
+            </a>
+        </div>
+    </main>
