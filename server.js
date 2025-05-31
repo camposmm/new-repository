@@ -5,6 +5,8 @@
 /* ***********************
  * Require Statements
  *************************/
+const session = require("express-session")
+const pool = require('./database/')
 const express = require("express")
 const expressLayouts = require("express-ejs-layouts")
 const env = require("dotenv").config()
@@ -14,6 +16,29 @@ const baseController = require("./controllers/baseController")
 const inventoryRoute = require('./routes/inventoryRoute');
 // Add this near the top with your other requires
 const utilities = require('./utilities/');
+// Add the account route requirement
+const accountRoute = require('./routes/accountRoute');
+
+/* ***********************
+ * Middleware
+ * ************************/
+ app.use(session({
+  store: new (require('connect-pg-simple')(session))({
+    createTableIfMissing: true,
+    pool,
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  name: 'sessionId',
+}))
+
+// Express Messages Middleware
+app.use(require('connect-flash')())
+app.use(function(req, res, next){
+  res.locals.messages = require('express-messages')(req, res)
+  next()
+})
 
 /* ***********************
  * View Engine and Templates
@@ -26,7 +51,9 @@ app.set("layout", "./layouts/layout") // not at views root
 /* ***********************
  * Routes
  *************************/
-app.use(static)
+app.use(static);
+// Add the account route
+app.use('/account', accountRoute);
 //Index route
 app.get("/", utilities.handleErrors(baseController.buildHome))
 // Inventory routes
