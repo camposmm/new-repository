@@ -53,7 +53,7 @@ app.set("layout", "./layouts/layout") // not at views root
  *************************/
 app.use(static);
 // Add the account route
-app.use('/account', accountRoute);
+app.use("/account", require("./routes/accountRoute"));
 //Index route
 app.get("/", utilities.handleErrors(baseController.buildHome))
 // Inventory routes

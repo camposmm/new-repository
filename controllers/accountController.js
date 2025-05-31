@@ -1,17 +1,16 @@
-const utilities = require('../utilities/');
+// controllers/accountController.js
+const utilities = require("../utilities");
 
-/* ****************************************
-*  Deliver login view
-* *************************************** */
+/* ***************************
+ *  Build login view
+ * ************************** */
 async function buildLogin(req, res, next) {
-  let nav = await utilities.getNav()
+  let nav = await utilities.getNav();
   res.render("account/login", {
     title: "Login",
     nav,
     errors: null,
-    account_email: '',
-    message: req.query.message || null
-  })
+  });
 }
 
-module.exports = { buildLogin }
+module.exports = { buildLogin };
