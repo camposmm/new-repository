@@ -18,6 +18,8 @@ const inventoryRoute = require('./routes/inventoryRoute');
 const utilities = require('./utilities/');
 // Add the account route requirement
 const accountRoute = require('./routes/accountRoute');
+const bodyParser = require("body-parser")
+const flash = require('connect-flash');
 
 /* ***********************
  * Middleware
@@ -32,6 +34,8 @@ const accountRoute = require('./routes/accountRoute');
   saveUninitialized: true,
   name: 'sessionId',
 }))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 // Express Messages Middleware
 app.use(require('connect-flash')())
@@ -79,15 +83,13 @@ const host = process.env.HOST
 * Place after all other middleware
 *************************/
 app.use(async (err, req, res, next) => {
-  let nav = await utilities.getNav()
-  console.error(`Error at: "${req.originalUrl}": ${err.message}`)
-  if(err.status == 404){ message = err.message} else {message = 'Oh no! There was a crash. Maybe try a different route?'}
-  res.render("errors/error", {
-    title: err.status || 'Server Error',
-    message,
-    nav
-  })
-})
+  console.error(err.stack); // Log the full error stack
+  res.status(500).render("errors/error", {
+    title: "Server Error",
+    message: err.message || "An unexpected error occurred.",
+    nav: await utilities.getNav(),
+  });
+});
 
 /* ***********************
  * Log statement to confirm server operation

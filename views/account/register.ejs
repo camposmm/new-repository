@@ -1,15 +1,15 @@
 <div class="register-container">
 <h1><%= title %></h1>
 
-  <% if (errors) { %>
-    <div class="error-messages">
-      <ul>
-        <% errors.forEach(error => { %>
-          <li><%= error %></li>
-        <% }) %>
-      </ul>
-    </div>
-  <% } %>
+<% if (errors && errors.length > 0) { %>
+  <div class="error-messages">
+    <ul>
+      <% errors.forEach(error => { %>
+        <li><%= error %></li>
+      <% }) %>
+    </ul>
+  </div>
+<% } %>
 
   <form action="/account/register" method="POST">
     <label for="firstName">First Name:</label>
