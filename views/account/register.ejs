@@ -1,0 +1,31 @@
+<div class="register-container">
+<h1><%= title %></h1>
+
+  <% if (errors) { %>
+    <div class="error-messages">
+      <ul>
+        <% errors.forEach(error => { %>
+          <li><%= error %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form action="/account/register" method="POST">
+    <label for="firstName">First Name:</label>
+    <input type="text" name="firstName" id="firstName" required />
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" name="lastName" id="lastName" required />
+
+    <label for="email">Email Address:</label>
+    <input type="email" name="email" id="email" required />
+
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" required minlength="12"
+           pattern="(?=.*\d)(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{12,}" />
+    <button type="button" id="togglePassword">Show Password</button>
+
+    <button type="submit">Register</button>
+  </form>
+</div>
