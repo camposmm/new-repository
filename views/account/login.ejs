@@ -6,21 +6,41 @@
     <div class="alert alert-<%= messageType %>"><%= message %></div>
   <% } %>
 
-  <form action="/account/login" method="post">
-    <div class="form-group">
-      <label for="account_email">Email:</label>
-      <input type="email" class="form-control" id="account_email" name="account_email" required>
-    </div>
-    
-    <div class="form-group">
-      <label for="account_password">Password:</label>
-      <input type="password" class="form-control" id="account_password" name="account_password" required>
-    </div>
-    
-    <button type="submit" class="btn btn-primary">LOGIN</button>
-  </form>
-  
+<form action="/account/login" method="post" novalidate>
+  <label for="account_email">Email:</label>
+  <input type="email" id="account_email" name="account_email" required>
+  <small>Enter a valid email address.</small>
+
+  <label for="account_password">Password:</label>
+  <input type="password" id="account_password" name="account_password" required
+    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{12,}"
+    minlength="12"
+    oninput="checkPasswordStrength(this.value)">
+  <small>Passwords must be at least 12 characters and contain at least 1 number, 1 capital letter, and 1 special character.</small>
+  <div id="password-strength-meter"></div>
+
+  <button type="submit">Login</button>
   <div class="mt-3">
     No account? <a href="/account/register">Register</a>
   </div>
+</form>
 </main>
+<script>
+function checkPasswordStrength(password) {
+  const meter = document.getElementById("password-strength-meter");
+  const strongRegex = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{12,}");
+
+  if (!password) {
+    meter.textContent = "";
+    return;
+  }
+
+  if (strongRegex.test(password)) {
+    meter.style.color = "green";
+    meter.textContent = "Strong password";
+  } else {
+    meter.style.color = "red";
+    meter.textContent = "Weak password";
+  }
+}
+</script>

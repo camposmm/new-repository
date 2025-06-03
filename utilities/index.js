@@ -5,22 +5,29 @@ const Util = {};
  * Constructs the nav HTML unordered list
  ************************** */
 Util.getNav = async function () {
+  let navList = "<ul>";
+
   try {
     const data = await invModel.getClassifications();
-    console.log("Classification data:", data.rows); // Proper logging of the data we want
-    let list = "<ul>";
-    list += '<li><a href="/" title="Home page">Home</a></li>';
-    data.rows.forEach((row) => {
-      list += "<li>";
-      list += `<a href="/inv/type/${row.classification_id}" title="See our inventory of ${row.classification_name} vehicles">${row.classification_name}</a>`;
-      list += "</li>";
-    });
-    list += "</ul>";
-    return list;
+
+    // Always include the Home link
+    navList += '<li><a href="/" title="Home page">Home</a></li>';
+
+    if (!Array.isArray(data) || data.length === 0) {
+      navList += "<li>No classifications found</li>";
+    } else {
+      data.forEach((row) => {
+        navList += `<li><a href="/inv/type/${row.classification_id}" title="See our ${row.classification_name} inventory">${row.classification_name}</a></li>`;
+      });
+    }
   } catch (error) {
-    console.error("Error building navigation:", error);
-    return "<ul><li>Error loading navigation</li></ul>";
+    console.error("Error fetching classification data for navigation:", error);
+    navList += "<li>Error loading navigation</li>";
   }
+
+  navList += "</ul>";
+
+  return navList;
 };
 
 /* **************************************
@@ -55,6 +62,23 @@ Util.buildClassificationGrid = async function(data) {
  * General Error Handling
  **************************************** */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
+function handleErrors(fn) {
+  return async (req, res, next) => {
+    try {
+      await fn(req, res, next);
+    } catch (error) {
+      console.error(`Error: ${error}`);
+      req.flash("notice", "An error occurred. Please try again.");
+      res.redirect("/");
+    }
+  };
+}
+
+async function getNav() {
+  const data = await classificationModel.getClassifications();
+  const nav = await utilities.getNav(data);
+  return nav;
+}
 
 /* **************************************
 * Build the inventory detail view HTML

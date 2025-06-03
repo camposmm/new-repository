@@ -1,26 +1,6 @@
-// controllers/accountController.js
-const utilities = require("../utilities");
-const accountModel = require('../models/accountModel'); // Ensure this line is present
-
-/* ***************************
- *  Build login view
- * ************************** */
-async function buildLogin(req, res, next) {
-  let nav = ""; // Initialize nav as empty string
-  try {
-    nav = await utilities.getNav(); // Try to get navigation data
-  } catch (error) {
-    console.error("Error fetching navigation:", error.message); // Log error if DB fails
-    // Proceed without navigation data if DB connection fails
-  }
-  res.render("account/login", {
-    title: "Login",
-    nav, // Pass nav (either fetched data or empty string)
-    errors: null,
-    message: req.flash("notice"), // Pass flash messages
-    messageType: req.flash("messageType") // Pass flash message type
-  });
-}
+const utilities = require("../utilities/index");
+const accountModel = require("../models/accountModel");
+const bcrypt = require("bcrypt");
 
 async function buildRegister(req, res, next) {
   let nav = await utilities.getNav();
@@ -30,61 +10,55 @@ async function buildRegister(req, res, next) {
     errors: null
   });
 }
-/* ****************************************
- * Deliver registration view
- * *************************************** */
-async function buildRegister(req, res, next) {
-  let nav = await utilities.getNav();
-  res.render("account/register", {
-    title: "Register",
-    nav,
-    errors: [] // Always pass an empty array for errors
-  });
-}
-
-/* ****************************************
-*  Process Registration
-* *************************************** */
 
 async function registerAccount(req, res) {
-  let nav = await utilities.getNav();
   const { account_firstname, account_lastname, account_email, account_password } = req.body;
 
   try {
+    const hashedPassword = bcrypt.hashSync(account_password, 10);
     const regResult = await accountModel.registerAccount(
       account_firstname,
       account_lastname,
       account_email,
-      account_password
+      hashedPassword
     );
 
-    if (regResult && regResult.rowCount && regResult.rowCount > 0) {
-      req.flash("notice", `Congratulations, ${account_firstname}! Please log in.`);
-      res.status(201).render("account/login", {
-        title: "Login",
-        nav,
-      });
+    if (regResult && regResult.account_id) {
+      req.flash("notice", "Registration successful! Please log in.");
+      res.redirect("/account/login");
     } else {
-      req.flash("notice", "Sorry, registration failed.");
-      res.status(500).render("account/register", {
+      req.flash("notice", "Something went wrong.");
+      res.status(501).render("account/register", {
         title: "Registration",
-        nav,
-        errors: ["Registration failed. Please try again."] // Provide an error message
+        errors: [{ msg: "Registration failed." }],
+        account_firstname,
+        account_lastname,
+        account_email
       });
     }
   } catch (error) {
-    console.error("Error registering account:", error.message);
-    res.status(500).render("account/register", {
+    req.flash("notice", "An unexpected error occurred.");
+    res.status(501).render("account/register", {
       title: "Registration",
-      nav,
-      errors: ["An unexpected error occurred. Please try again later."] // Handle errors gracefully
+      errors: [{ msg: error.message }],
+      account_firstname,
+      account_lastname,
+      account_email
     });
   }
 }
 
-// Export this function too
+async function buildLogin(req, res, next) {
+  let nav = await utilities.getNav();
+  res.render("account/login", {
+    title: "Login",
+    nav,
+    errors: null
+  });
+}
+
 module.exports = {
-  buildLogin,
   buildRegister,
-  registerAccount
+  registerAccount,
+  buildLogin
 };

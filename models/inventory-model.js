@@ -3,8 +3,64 @@ const pool = require("../database/");
 /* ***************************
  * Get all classification data
  * ************************** */
-async function getClassifications(){
-  return await pool.query("SELECT * FROM public.classification ORDER BY classification_name");
+async function getClassifications() {
+  try {
+    const result = await pool.query("SELECT * FROM classification ORDER BY classification_name");
+    return result.rows; // ✅ Return only the rows
+  } catch (error) {
+    console.error("Error fetching classifications:", error.message);
+    return []; // ✅ Return empty array on error
+  }
+}
+
+async function addClassification(name) {
+  const sql = `
+    INSERT INTO classification (classification_name)
+    VALUES ($1)
+    RETURNING *;
+  `;
+  const result = await pool.query(sql, [name]);
+  return result.rows[0];
+}
+
+async function addVehicle(vehicleData) {
+  const {
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color,
+    classification_id
+  } = vehicleData;
+
+  const sql = `
+    INSERT INTO inventory (
+      inv_make, inv_model, inv_year, inv_description,
+      inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id
+    ) VALUES (
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+    )
+    RETURNING *;
+  `;
+
+  const result = await pool.query(sql, [
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color,
+    classification_id
+  ]);
+
+  return result.rows[0];
 }
 
 /* ***************************
@@ -39,6 +95,54 @@ async function getInventoryByInventoryId(inventory_id) {
     console.error("getInventoryByInventoryId error: " + error);
   }
 }
+/* ***************************
+ * Add inventory
+ * ************************** */
+async function addInventory(vehicleData) {
+  const {
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color,
+    classification_id
+  } = vehicleData;
+
+  const sql = `
+    INSERT INTO inventory (
+      inv_make, inv_model, inv_year, inv_description,
+      inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id
+    ) VALUES (
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+    )
+    RETURNING *;
+  `;
+
+  const result = await pool.query(sql, [
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color,
+    classification_id
+  ]);
+
+  return result.rows[0];
+}
+
+module.exports = {
+  getClassifications,
+  addClassification,
+  addVehicle
+};
 
 // Update the exports to include the new function
 module.exports = { getClassifications, getInventoryByClassificationId, getInventoryByInventoryId };

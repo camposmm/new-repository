@@ -236,176 +236,153 @@ footer {
   border-color: #0d6efd;
 }
 
-/* Login Form Specific Styles - Added by Manus */
-.login-form-container {
-  background-color: #4A6572; /* Dark blue-grey */
-  padding: 30px;
+/* Login Form Styling */
+form[action="/account/login"] {
+  background-color: #2c3e50;
+  padding: 30px 35px;
   border-radius: 10px;
-  color: #ffffff; /* White text */
-  max-width: 500px; /* Limit width */
-  margin: 40px auto; /* Center with more top margin */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 320px;
+  margin: 40px auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-family: sans-serif;
 }
 
-/* Hide the default H1 if it's redundant with page title */
-.login-form-container h1 {
-  display: none; 
-}
-
-.login-form-container .form-group label {
-  color: #ffffff; /* White labels */
-  margin-bottom: 8px;
+form[action="/account/login"] label {
   display: block;
+  margin-top: 15px;
   font-weight: bold;
+  font-size: 14px;
 }
 
-.login-form-container .form-control {
-  background-color: #ffffff; /* White input background */
-  border: 1px solid #ccc; /* Subtle border */
-  border-radius: 8px; /* Slightly more rounded corners */
-  color: #333; /* Dark text inside input */
-  padding: 12px;
-  width: 100%; /* Ensure full width */
-  box-sizing: border-box; /* Include padding in width */
-  margin-bottom: 20px; /* Space between inputs */
-}
-
-.login-form-container .btn-primary {
-  background-color: #ffffff; /* White button background */
-  color: #4A6572; /* Dark text on button */
+form[action="/account/login"] input[type="email"],
+form[action="/account/login"] input[type="password"] {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 5px;
+  border-radius: 6px;
   border: none;
-  border-radius: 25px; /* Rounded button */
-  padding: 12px 30px;
+  font-size: 14px;
+}
+
+form[action="/account/login"] small {
+  display: block;
+  font-size: 11px;
+  margin-top: 4px;
+  color: #ecf0f1;
+}
+
+#password-strength-meter {
+  height: 6px;
+  background-color: #7f8c8d;
+  border-radius: 3px;
+  margin: 10px 0 15px;
+}
+
+form[action="/account/login"] button[type="submit"] {
+  background-color: #ffffff;
+  color: #2c3e50;
+  border: none;
+  padding: 10px 0;
+  width: 120px;
+  margin: 0 auto;
+  display: block;
+  margin-top: 15px;
+  border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
-  display: block; /* Center button */
-  margin: 25px auto 15px auto; /* Center button */
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s;
 }
 
-.login-form-container .btn-primary:hover {
-  background-color: #e0e0e0; /* Slightly darker grey on hover */
+form[action="/account/login"] button[type="submit"]:hover {
+  background-color: #ecf0f1;
 }
 
-.login-form-container .mt-3 {
-  color: #ffffff; /* White text for "No account?" */
-  text-align: center;
+.mt-3 {
   margin-top: 20px;
+  color: white;
+  font-size: 18px;
+  text-align: center;
 }
 
-.login-form-container .mt-3 a {
-  color: #ffffff; /* White link */
-  text-decoration: underline;
+.mt-3 a {
+  color: white;
   font-weight: bold;
+  text-decoration: underline;
 }
 
-.login-form-container .mt-3 a:hover {
-  color: #cccccc; /* Lighter grey on hover */
+.mt-3 a:hover {
+  color: #ccc;
   text-decoration: none;
 }
 
-/* Optional: Style flash messages if needed */
-.login-form-container .alert {
-  color: #333; /* Dark text for messages */
-  background-color: #f8d7da; /* Example: Light red for errors */
-  border-color: #f5c6cb;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 15px;
+/* CSS for the provided registration form to match the reference image */
+
+/* Style the form container */
+form[action="/account/register"] {
+  background-color: #ffffff; /* White background */
+  padding: 25px;
+  border: 1px solid #000000; /* Black border around the form */
+  max-width: 450px; /* Adjust as needed */
+  margin: 20px auto; /* Center the form */
+  font-family: sans-serif; /* Basic sans-serif font */
 }
 
-.login-form-container .alert-success { /* Example for success */
-  background-color: #d4edda;
-  border-color: #c3e6cb;
-  color: #155724;
-}
-/* Registration Form Container */
-.register-container {
-  max-width: 450px;
-  margin: 3rem auto;
-  padding: 2rem;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  font-family: Arial, sans-serif;
-}
-
-/* Title */
-.register-container h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 1.5rem;
-}
-
-/* Error Messages */
-.error-messages {
-  background-color: #ffe6e6;
-  color: #d8000c;
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-}
-
-.error-messages ul {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-.error-messages li {
-  margin-bottom: 0.4rem;
-}
-
-/* Form Labels */
-.register-container label {
+/* Style labels */
+form[action="/account/register"] label {
+  color: #000000; /* Black labels */
+  margin-bottom: 5px;
   display: block;
   font-weight: bold;
-  margin-top: 1rem;
-  color: #333;
 }
 
-/* Form Inputs */
-.register-container input[type="text"],
-.register-container input[type="email"],
-.register-container input[type="password"] {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-  box-sizing: border-box;
-  margin-top: 0.25rem;
+/* Style input fields */
+form[action="/account/register"] input[type="text"],
+form[action="/account/register"] input[type="email"],
+form[action="/account/register"] input[type="password"] {
+  background-color: #ffffff; /* White input background */
+  border: 1px solid #000000; /* Black border */
+  border-radius: 0; /* Sharp corners */
+  color: #333; /* Dark text inside input */
+  padding: 10px;
+  width: 100%; /* Ensure full width */
+  box-sizing: border-box; /* Include padding in width */
+  margin-bottom: 5px; /* Space below input */
 }
 
-/* Show/Hide Password Button */
-#togglePassword {
-  background: none;
-  border: none;
-  color: #007bff;
-  cursor: pointer;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-}
-
-#togglePassword:hover {
-  text-decoration: underline;
-}
-
-/* Submit Button */
-.register-container button[type="submit"] {
+/* Style the small hint text (minimal styling as it's not prominent in the image) */
+form[action="/account/register"] small {
+  color: #555555; /* Grey for hints */
   display: block;
-  width: 100%;
-  padding: 0.75rem;
-  margin-top: 1.5rem;
-  background-color: #007bff;
-  color: white;
+  margin-top: 2px;
+  margin-bottom: 15px; /* Space below hint */
+  font-size: 0.8em;
+}
+
+/* Style the password strength meter (minimal styling) */
+#password-strength-meter {
+  height: 5px;
+  background-color: #eee;
+  border-radius: 3px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  /* Add JS to update width/color based on strength */
+}
+
+/* Style the submit button */
+form[action="/account/register"] button[type="submit"] {
+  background-color: #2979FF; /* Blue button background (adjust color as needed) */
+  color: #ffffff; /* White text on button */
   border: none;
-  border-radius: 4px;
-  font-size: 1rem;
+  border-radius: 25px; /* Rounded button */
+  padding: 10px 25px;
+  font-weight: bold;
   cursor: pointer;
+  display: inline-block; /* Align button */
+  margin-top: 15px; /* Space above button */
   transition: background-color 0.3s ease;
 }
 
-.register-container button[type="submit"]:hover {
-  background-color: #0056b3;
+form[action="/account/register"] button[type="submit"]:hover {
+  background-color: #1c65d1; /* Darker blue on hover */
 }

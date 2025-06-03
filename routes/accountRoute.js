@@ -1,15 +1,22 @@
 const express = require("express");
-const router = new express.Router();
-const utilities = require("../utilities");
+const router = express.Router();
+
+// Import controller functions
 const accountController = require("../controllers/accountController");
 
-/**
- * Route to build the login view
- */
-router.get("/login", utilities.handleErrors(accountController.buildLogin));
+// Import validation middleware
+const regValidate = require("../utilities/account-validation");
 
-
+// Register routes
 router.get("/register", accountController.buildRegister);
-router.post('/register', utilities.handleErrors(accountController.registerAccount))
+router.post(
+  "/register",
+  regValidate.registrationRules(),
+  regValidate.checkRegData,
+  accountController.registerAccount
+);
+
+// Login routes
+router.get("/login", accountController.buildLogin);
 
 module.exports = router;
