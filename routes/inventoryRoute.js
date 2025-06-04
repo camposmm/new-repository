@@ -1,49 +1,55 @@
-// routes/inventoryRoute.js
-
 const express = require("express");
 const router = express.Router();
+const utilities = require("../utilities/index");
 
 // Import controllers
-const inventoryController = require("../controllers/invController");
-const classificationController = require("../controllers/classificationController");
-
-// Import utilities
-const utilities = require("../utilities/index");
+const invController = require("../controllers/invController");
 
 // Import validation middleware
 const invValidate = require("../utilities/inventory-validation");
 const classValidate = require("../utilities/classification-validation");
 
-// Route: View vehicles by classification
-router.get("/type/:classificationId", inventoryController.buildByClassificationId);
+/* ***************************
+ * Inventory Routes
+ ***************************/
 
-// Route: View vehicle detail
-router.get("/detail/:inventoryId", inventoryController.buildByInventoryId);
+// Base inventory route - shows management view
+router.get("/", utilities.handleErrors(invController.buildManagement));
 
-// Route: Add new classification
-router.get("/add-classification", classificationController.buildAddClassification);
+// View inventory by classification
+router.get("/type/:classificationId", utilities.handleErrors(invController.buildByClassificationId));
+
+// View inventory item detail
+router.get("/detail/:inventoryId", utilities.handleErrors(invController.buildByInventoryId));
+
+/* ***************************
+ * Classification Management Routes
+ ***************************/
+
+// Show add classification form
+router.get("/add-classification", utilities.handleErrors(invController.buildAddClassification));
+
+// Process add classification form
 router.post(
   "/add-classification",
   classValidate.classificationRules(),
-  classValidate.checkClassificationData,
-  utilities.handleErrors(classificationController.addNewClassification)
+  utilities.handleErrors(classValidate.checkClassificationData),
+  utilities.handleErrors(invController.addNewClassification)
 );
 
-// Route: Add new inventory item
-router.get("/add-inventory", inventoryController.buildAddInventory);
+/* ***************************
+ * Inventory Management Routes
+ ***************************/
+
+// Show add inventory form
+router.get("/add-inventory", utilities.handleErrors(invController.buildAddInventory));
+
+// Process add inventory form
 router.post(
   "/add-inventory",
   invValidate.inventoryRules(),
-  invValidate.checkInventoryData,
-  utilities.handleErrors(inventoryController.addNewInventory)
-);
-// Route: Add Inventory
-router.get("/add-vehicle", inventoryController.buildAddInventory);
-router.post(
-  "/add-vehicle",
-  invValidate.inventoryRules(),
-  invValidate.checkInventoryData,
-  utilities.handleErrors(inventoryController.addNewVehicle)
+  utilities.handleErrors(invValidate.checkInventoryData),
+  utilities.handleErrors(invController.addNewVehicle)
 );
 
 module.exports = router;

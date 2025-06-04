@@ -1,36 +1,35 @@
-const { body, validationResult } = require("express-validator");
+const { check, validationResult } = require('express-validator');
+const utilities = require('./index');
 
-const validate = {};
-
-// Rule: Classification name must be at least 3 characters
-validate.classificationRules = () => {
+/* ***************************
+ * Classification Validation Rules
+ * ************************** */
+const classificationRules = () => {
   return [
-    body("classification_name")
+    check('classification_name')
       .trim()
-      .escape()
-      .notEmpty()
-      .isLength({ min: 3 })
-      .withMessage("Classification name must be at least 3 characters.")
+      .isLength({ min: 1 })
+      .withMessage('Please provide a classification name.')
+      .matches(/^[a-zA-Z]+$/)
+      .withMessage('Classification name must contain only letters.')
   ];
 };
 
-// Middleware to check classification data
-validate.checkClassificationData = async (req, res, next) => {
-  const { classification_name } = req.body;
+/* ***************************
+ * Check Classification Data
+ * ************************** */
+const checkClassificationData = async (req, res, next) => {
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     let nav = await utilities.getNav();
-    res.render("inventory/add-classification", {
-      title: "Add Classification",
+    return res.render('inventory/add-classification', {
+      title: 'Add Classification',
       nav,
       errors: errors.array(),
-      classification_name
+      classification_name: req.body.classification_name
     });
-    return;
   }
-
   next();
 };
 
-module.exports = validate;
+module.exports = { classificationRules, checkClassificationData };

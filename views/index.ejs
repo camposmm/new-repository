@@ -1,5 +1,9 @@
 <h1>Welcome to CSE Motors!</h1> 
-<%- messages() %>
+<% if (messages && messages.length > 0) { %>
+  <div class="message">
+    <%= messages.join('<br>') %>
+  </div>
+<% } %>
 
 <section class="hero">
     <div class="hero-image">

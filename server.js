@@ -2,121 +2,136 @@
  * This server.js file is the primary file of the 
  * application. It is used to control the project.
  *******************************************/
+
 /* ***********************
  * Require Statements
  *************************/
-const session = require("express-session")
-const pool = require('./database/')
-const express = require("express")
-const expressLayouts = require("express-ejs-layouts")
-const env = require("dotenv").config()
-const app = express()
-const static = require("./routes/static")
-const baseController = require("./controllers/baseController")
-const inventoryRoute = require('./routes/inventoryRoute');
+const express = require("express");
+const app = express();
+const expressLayouts = require("express-ejs-layouts");
+const session = require("express-session");
+const pool = require("./database/");
+const connectPgSimple = require("connect-pg-simple")(session);
+const flash = require("connect-flash");
+const dotenv = require("dotenv").config();
+const { validationResult } = require('express-validator');
 
-// Add this near the top with your other requires
-const utilities = require('./utilities/');
-// Add the account route requirement
+// Import controllers
+const baseController = require("./controllers/baseController");
+const inventoryRoute = require('./routes/inventoryRoute');
 const accountRoute = require('./routes/accountRoute');
-const bodyParser = require("body-parser")
-const flash = require('connect-flash');
+const staticRoute = require('./routes/static');
+
+// Import utilities
+const Util = require("./utilities/index");
 
 /* ***********************
  * Middleware
- * ************************/
- app.use(session({
-  store: new (require('connect-pg-simple')(session))({
-    createTableIfMissing: true,
-    pool,
-  }),
-  secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true,
-  name: 'sessionId',
-}))
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+ ************************/
 
-// Express Messages Middleware
-app.use(require('connect-flash')())
-app.use(function(req, res, next){
-  res.locals.messages = require('express-messages')(req, res)
-  next()
-})
+// Body parsing middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Session setup
+app.use(session({
+  store: new connectPgSimple({
+    pool,
+    tableName: 'session',
+    createTableIfMissing: true
+  }),
+  secret: process.env.SESSION_SECRET || "your-secret-key-here",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
+  },
+  name: 'sessionId'
+}));
+
+// Flash messages
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.messages = req.flash();
+  next();
+});
+
+// Make validationResult available to all routes
+app.use((req, res, next) => {
+  res.validationResult = validationResult;
+  next();
+});
 
 /* ***********************
  * View Engine and Templates
  *************************/
+app.set("view engine", "ejs");
+app.use(expressLayouts);
+app.set("layout", "./layouts/layout");
 
-app.set("view engine", "ejs")
-app.use(expressLayouts)
-app.set("layout", "./layouts/layout") // not at views root
+// Serve static files
+app.use(express.static("public"));
 
 /* ***********************
- * Routes
- *************************/
-app.use(static);
-// Add the account route
-app.use("/account", require("./routes/accountRoute"));
-//Index route
-app.get("/", utilities.handleErrors(baseController.buildHome))
+* Routes
+*************************/
+
+// Static routes
+app.use(staticRoute);
+
+// Base route
+app.get("/", baseController.buildHome);
+
+// Account route
+app.use("/account", accountRoute);
+
 // Inventory routes
-app.use("/inv", inventoryRoute)
-// Error routes
-const errorRoute = require('./routes/errorRoute')
-app.use("/error", errorRoute)
-// File Not Found Route - must be last route in list
-app.use(async (req, res, next) => {
-    next({status: 404, message: 'Sorry, we appear to have lost that page.'})
-})
-
-/* ***********************
- * Local Server Information
- * Values from .env (environment) file
- *************************/
-const port = process.env.PORT
-const host = process.env.HOST
-
+app.use("/inv", inventoryRoute);
 
 /* ***********************
 * Express Error Handler
-* Place after all other middleware
 *************************/
 app.use(async (err, req, res, next) => {
-  console.error(err.stack); // Log the full error stack
-  res.status(500).render("errors/error", {
-    title: "Server Error",
-    message: err.message || "An unexpected error occurred.",
-    nav: await utilities.getNav(),
+  console.error(`Error occurred: ${err.message || err}`);
+  const nav = await Util.getNav();
+  const title = err.status === 404 ? "Page Not Found" : "Server Error";
+  const statusCode = err.status || 500;
+  const message = err.message || "An unexpected error occurred.";
+
+  if (statusCode !== 500) {
+    req.flash('notice', message);
+  }
+
+  res.status(statusCode).render("errors/error", {
+    title,
+    message,
+    nav
+  });
+});
+
+// 404 Handler
+app.use(async (req, res, next) => {
+  const nav = await Util.getNav();
+  res.status(404).render("errors/error", {
+    title: "Page Not Found",
+    message: 'Sorry, we appear to have lost that page.',
+    nav
   });
 });
 
 /* ***********************
- * Log statement to confirm server operation
+ * Server Configuration
+ *************************/
+const port = process.env.PORT || 5500;
+const host = process.env.HOST || "localhost";
+
+/* ***********************
+ * Start Server
  *************************/
 app.listen(port, () => {
-  console.log(`app listening on ${host}:${port}`)
-})
-
-// Add this with your other routes
-app.get("/cse-motors", function(req, res){
-  res.render("cse-motors", {
-    title: "CSE Motors",
-    vehicle: {
-      name: "DMC Delorean",
-      features: ["3 Cup holders", "Superman doors", "Fuzzy dice"],
-      upgrades: [
-        ["Flux Capacitor", "Flame Breaks"],
-        ["32bit", "Bumper Stickers", "Hup Caps"]
-      ],
-      reviews: [
-        { text: "So fast it's almost like traveling in time.", rating: "4/5" },
-        { text: "Coolest ride on the road.", rating: "4/5" },
-        { text: "I'm feeling McFly!", rating: "5/5" },
-        { text: "The most futuristic ride of our day.", rating: "4.5/5" },
-        { text: "80's livin and I love it!", rating: "5/5" }
-      ]
-    }
-  });
+  console.log(`App listening on http://${host}:${port}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
