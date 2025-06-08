@@ -1,39 +1,40 @@
 /* ******************************************
- * This server.js file is the primary file of the 
- * application. It is used to control the project.
+ * Primary server configuration file
+ * Sets up Express, middleware, routes, and error handling
  *******************************************/
 
+// Core dependencies
+const express = require("express")
+const app = express()
+const expressLayouts = require("express-ejs-layouts")
+const session = require("express-session")
+const flash = require("connect-flash")
+const cookieParser = require("cookie-parser")
+const dotenv = require("dotenv").config()
+
+// Database and utilities
+const pool = require("./database/")
+const connectPgSimple = require("connect-pg-simple")(session)
+const utilities = require("./utilities/")
+
+// Route controllers
+const baseController = require("./controllers/baseController")
+const inventoryRoute = require('./routes/inventoryRoute')
+const accountRoute = require('./routes/accountRoute')
+const staticRoute = require('./routes/static')
+
 /* ***********************
- * Require Statements
+ * Middleware Setup
  *************************/
-const express = require("express");
-const app = express();
-const expressLayouts = require("express-ejs-layouts");
-const session = require("express-session");
-const pool = require("./database/");
-const connectPgSimple = require("connect-pg-simple")(session);
-const flash = require("connect-flash");
-const dotenv = require("dotenv").config();
-const { validationResult } = require('express-validator');
 
-// Import controllers
-const baseController = require("./controllers/baseController");
-const inventoryRoute = require('./routes/inventoryRoute');
-const accountRoute = require('./routes/accountRoute');
-const staticRoute = require('./routes/static');
+// Parse request bodies
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
-// Import utilities
-const Util = require("./utilities/index");
+// Cookie parser
+app.use(cookieParser())
 
-/* ***********************
- * Middleware
- ************************/
-
-// Body parsing middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// Session setup
+// Session configuration
 app.use(session({
   store: new connectPgSimple({
     pool,
@@ -50,88 +51,78 @@ app.use(session({
     sameSite: 'strict'
   },
   name: 'sessionId'
-}));
+}))
 
-// Flash messages
-app.use(flash());
-app.use((req, res, next) => {
-  res.locals.messages = req.flash();
-  next();
-});
+// Flash messages middleware
+app.use(flash())
 
-// Make validationResult available to all routes
+// Make flash messages available to all views
 app.use((req, res, next) => {
-  res.validationResult = validationResult;
-  next();
-});
+  res.locals.messages = req.flash()
+  next()
+})
 
 /* ***********************
- * View Engine and Templates
+ * View Engine Setup
  *************************/
-app.set("view engine", "ejs");
-app.use(expressLayouts);
-app.set("layout", "./layouts/layout");
 
-// Serve static files
-app.use(express.static("public"));
+// EJS templating
+app.set("view engine", "ejs")
+app.use(expressLayouts)
+app.set("layout", "./layouts/layout")
+
+// Static files
+app.use(express.static("public"))
 
 /* ***********************
-* Routes
-*************************/
+ * Route Handlers
+ *************************/
 
 // Static routes
-app.use(staticRoute);
+app.use(staticRoute)
 
-// Base route
-app.get("/", baseController.buildHome);
+// Home route
+app.get("/", utilities.handleErrors(baseController.buildHome))
 
-// Account route
-app.use("/account", accountRoute);
+// Account routes
+app.use("/account", accountRoute)
 
 // Inventory routes
-app.use("/inv", inventoryRoute);
+app.use("/inv", inventoryRoute)
 
 /* ***********************
-* Express Error Handler
-*************************/
+ * Error Handlers
+ *************************/
+
+// 500 Error Handler
 app.use(async (err, req, res, next) => {
-  console.error(`Error occurred: ${err.message || err}`);
-  const nav = await Util.getNav();
-  const title = err.status === 404 ? "Page Not Found" : "Server Error";
-  const statusCode = err.status || 500;
-  const message = err.message || "An unexpected error occurred.";
-
-  if (statusCode !== 500) {
-    req.flash('notice', message);
-  }
-
-  res.status(statusCode).render("errors/error", {
-    title,
-    message,
+  console.error(`Server Error: ${err.message}`)
+  const nav = await utilities.getNav()
+  res.status(500).render("errors/error", {
+    title: "Server Error",
+    message: "Sorry, we encountered an unexpected error.",
     nav
-  });
-});
+  })
+})
 
-// 404 Handler
+// 404 Error Handler
 app.use(async (req, res, next) => {
-  const nav = await Util.getNav();
+  const nav = await utilities.getNav()
   res.status(404).render("errors/error", {
     title: "Page Not Found",
-    message: 'Sorry, we appear to have lost that page.',
+    message: "The page you requested doesn't exist.",
     nav
-  });
-});
+  })
+})
 
 /* ***********************
- * Server Configuration
+ * Server Startup
  *************************/
-const port = process.env.PORT || 5500;
-const host = process.env.HOST || "localhost";
 
-/* ***********************
- * Start Server
- *************************/
+const port = process.env.PORT || 5500
+const host = process.env.HOST || "localhost"
+
 app.listen(port, () => {
-  console.log(`App listening on http://${host}:${port}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+  console.log(`Server running on http://${host}:${port}`)
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`)
+})

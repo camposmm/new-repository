@@ -1,0 +1,28 @@
+<main class="container account-management">
+  <h1>Account Management</h1>
+  
+  <% if (messages && messages.notice) { %>
+    <div class="alert alert-info">
+      <%= messages.notice %>
+    </div>
+  <% } %>
+
+  <!-- Display welcome message with first name -->
+  <h2>Welcome <%= account.account_firstname %></h2>
+  
+  <!-- Display account information -->
+  <div class="account-info">
+    <p><strong>Name:</strong> <%= account.account_firstname %> <%= account.account_lastname %></p>
+    <p><strong>Email:</strong> <%= account.account_email %></p>
+    <p><strong>Account Type:</strong> <%= account.account_type %></p>
+  </div>
+
+  <!-- Update account link -->
+  <a href="/account/update/<%= account.account_id %>" class="btn btn-primary">Update Account Information</a>
+
+  <!-- Conditionally display inventory management for Employees/Admins -->
+  <% if (account.account_type === 'Employee' || account.account_type === 'Admin') { %>
+    <h3>Inventory Management</h3>
+    <p><a href="/inv/management" class="btn btn-secondary">Manage Inventory</a></p>
+  <% } %>
+</main>
