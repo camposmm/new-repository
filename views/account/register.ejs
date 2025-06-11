@@ -12,19 +12,19 @@
 <form action="/account/register" method="post" novalidate>
   <div class="form-group">
     <label for="account_firstname">First Name:</label>
-    <input type="text" id="account_firstname" name="account_firstname" value="<%= account_firstname || '' %>" required minlength="1" aria-required="true">
+    <input type="text" id="account_firstname" name="account_firstname" value="<%= (locals.account_firstname || '') %>" required minlength="1" aria-required="true">
     <small>Enter your first name.</small>
   </div>
 
   <div class="form-group">
     <label for="account_lastname">Last Name:</label>
-    <input type="text" id="account_lastname" name="account_lastname" value="<%= account_lastname || '' %>" required minlength="2">
+    <input type="text" id="account_lastname" name="account_lastname" value="<%= (account_lastname || '') %>" required minlength="2">
     <small>Enter your last name.</small>
   </div>
 
   <div class="form-group">
     <label for="account_email">Email:</label>
-    <input type="email" id="account_email" name="account_email" value="<%= account_email || '' %>" required>
+    <input type="email" id="account_email" name="account_email" value="<%= (account_email || '') %>" required>
     <small>Enter a valid email address.</small>
   </div>
 

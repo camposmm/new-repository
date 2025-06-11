@@ -3,16 +3,19 @@ const accountModel = require("../models/accountModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-/**
- * Build registration view
- */
-async function buildRegister(req, res, next) {
-  let nav = await utilities.getNav();
-  res.render("account/register", {
-    title: "Register",
-    nav,
-    errors: null
-  });
+/** 
+ * Build registration view 
+ */ 
+async function buildRegister(req, res, next) { 
+  let nav = await utilities.getNav(); 
+  res.render("account/register", { 
+    title: "Register", 
+    nav, 
+    errors: null,
+    account_firstname: "",
+    account_lastname: "",
+    account_email: ""
+  }); 
 }
 
 /**
