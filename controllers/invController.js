@@ -1,7 +1,44 @@
 const invModel = require("../models/inventory-model");
 const utilities = require("../utilities/");
+const reviewModel = require("../models/reviewModel");
 
 const invCont = {};
+
+/* ***************************
+ * Build Inventory by Classification View
+ * ************************** */
+invCont.buildByClassificationId = async function (req, res, next) {
+  const classification_id = req.params.classificationId;
+  const data = await invModel.getInventoryByClassificationId(classification_id);
+  const grid = await utilities.buildClassificationGrid(data);
+  let nav = await utilities.getNav();
+  const className = data[0].classification_name;
+  res.render("./inventory/classification", {
+    title: className + " vehicles",
+    nav,
+    grid,
+  });
+};
+
+/* ***************************
+ * Build Inventory by Inventory ID View
+ * ************************** */
+invCont.buildByInventoryId = async function (req, res, next) {
+  const inv_id = req.params.inventoryId;
+  const data = await invModel.getInventoryByInventoryId(inv_id);
+  const nav = await utilities.getNav();
+  const itemData = data;
+  
+  // Get reviews for this vehicle
+  const reviews = await reviewModel.getReviewsByInventoryId(inv_id);
+
+  res.render("inventory/detail", {
+    title: itemData.inv_make + " " + itemData.inv_model,
+    nav,
+    item: itemData,
+    reviews
+  });
+};
 
 /* ***************************
  * Build Management View

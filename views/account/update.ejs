@@ -62,24 +62,20 @@
   </form>
 </main>
 
+// Add to register.ejs and update.ejs
 <script>
-/**
- * Client-side password strength indicator
- */
 function checkPasswordStrength(password) {
   const meter = document.getElementById("password-strength-meter");
-  const strongRegex = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{12,}");
-
-  if (!password) {
-    meter.textContent = "";
-    return;
-  }
-
+  const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{12,})");
+  
   if (strongRegex.test(password)) {
-    meter.style.color = "green";
+    meter.style.backgroundColor = "green";
     meter.textContent = "Strong password";
+  } else if (password.length >= 8) {
+    meter.style.backgroundColor = "orange";
+    meter.textContent = "Medium password";
   } else {
-    meter.style.color = "red";
+    meter.style.backgroundColor = "red";
     meter.textContent = "Weak password";
   }
 }

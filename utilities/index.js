@@ -1,4 +1,5 @@
 const invModel = require('../models/inventory-model');
+const pool = require('../database/');
 
 const Util = {};
 
@@ -34,6 +35,24 @@ Util.buildClassificationList = async function (selectedId = null) {
 
   classificationList += "</select>";
   return classificationList;
+};
+
+/* ****************************************
+ * Build inventory grid
+ * ************************************** */
+Util.buildClassificationGrid = async function (data) {
+  let grid = '<ul id="inv-display">';
+  data.forEach((vehicle) => {
+    grid += '<li>';
+    grid += `<a href="/inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">`;
+    grid += `<img src="${vehicle.inv_thumbnail}" alt="${vehicle.inv_make} ${vehicle.inv_model}" />`;
+    grid += `<h2>${vehicle.inv_make} ${vehicle.inv_model}</h2>`;
+    grid += `<span>$${new Intl.NumberFormat('en-US').format(vehicle.inv_price)}</span>`;
+    grid += '</a>';
+    grid += '</li>';
+  });
+  grid += '</ul>';
+  return grid;
 };
 
 /* ****************************************

@@ -1,58 +1,78 @@
-<!-- EJS -->
-<% if (title) { %>
-<title><%= title %></title>
-<h1><%= title %></h1>
-<% } else {
-  res.redirect('/')
-} %>
+<%- include('../../layouts/partials/header') %>
 
-<%# messages() %>
-
-<!-- HTML -->
-<div class="vehicle-detail-wrapper">
-  <%- grid %>
-</div>
-
-<!-- CSS for responsive layout -->
-<style>
-  .vehicle-detail-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin: 1rem 0;
-  }
-  
-  .vehicle-image-container img {
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-  }
-  
-  .vehicle-info-container {
-    padding: 1rem 0;
-  }
-  
-  .detail-price {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #333;
-    margin: 1rem 0;
-  }
-  
-  /* Media query for larger screens */
-  @media screen and (min-width: 768px) {
-    .vehicle-detail-container {
-      flex-direction: row;
-      align-items: flex-start;
-    }
+<main class="container vehicle-detail-container">
+    <div class="vehicle-image-container">
+        <img src="<%= item.inv_image %>" alt="<%= item.inv_make %> <%= item.inv_model %>">
+    </div>
     
-    .vehicle-image-container {
-      flex: 1;
-    }
+    <div class="vehicle-info-container">
+        <h1><%= item.inv_make %> <%= item.inv_model %></h1>
+        <p class="detail-price">Price: $<%= new Intl.NumberFormat('en-US').format(item.inv_price) %></p>
+        
+        <div class="vehicle-specs">
+            <p><strong>Year:</strong> <%= item.inv_year %></p>
+            <p><strong>Mileage:</strong> <%= new Intl.NumberFormat('en-US').format(item.inv_miles) %> miles</p>
+            <p><strong>Color:</strong> <%= item.inv_color %></p>
+        </div>
+        
+        <div class="vehicle-description">
+            <p><%= item.inv_description %></p>
+        </div>
+    </div>
+</main>
+
+<section class="reviews-section container">
+    <h2>Customer Reviews</h2>
     
-    .vehicle-info-container {
-      flex: 1;
-      padding: 0 1rem;
-    }
-  }
-</style>
+    <% if (reviews && reviews.rows.length > 0) { %>
+        <div class="review-list">
+            <% reviews.rows.forEach(review => { %>
+                <div class="review">
+                    <div class="review-header">
+                        <strong><%= review.account_firstname %> <%= review.account_lastname %></strong>
+                        <span>Rating: 
+                            <% for(let i=1; i<=5; i++) { %>
+                                <span class="star <%= i <= review.review_rating ? 'filled' : '' %>">★</span>
+                            <% } %>
+                            (<%= review.review_rating %>/5)
+                        </span>
+                        <span class="review-date"><%= new Date(review.review_date).toLocaleDateString() %></span>
+                    </div>
+                    <p><%= review.review_text %></p>
+                </div>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <p>No reviews yet. Be the first to review this vehicle!</p>
+    <% } %>
+
+    <% if (typeof locals.account !== 'undefined') { %>
+        <div class="add-review">
+            <h3>Add Your Review</h3>
+            <form action="/review/add" method="POST">
+                <input type="hidden" name="inv_id" value="<%= item.inv_id %>">
+                
+                <div class="form-group">
+                    <label>Rating:</label>
+                    <div class="rating">
+                        <% for(let i=1; i<=5; i++) { %>
+                            <input type="radio" id="star<%=i%>" name="review_rating" value="<%=i%>" required>
+                            <label for="star<%=i%>">★</label>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="review_text">Review:</label>
+                    <textarea name="review_text" id="review_text" rows="4" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+        </div>
+    <% } else { %>
+        <p><a href="/account/login">Log in</a> to leave a review</p>
+    <% } %>
+</section>
+
+<%- include('../../layouts/partials/footer') %>

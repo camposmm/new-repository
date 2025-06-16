@@ -49,3 +49,21 @@
   <% } %>
 </form>
 </div>
+// Add to register.ejs and update.ejs
+<script>
+function checkPasswordStrength(password) {
+  const meter = document.getElementById("password-strength-meter");
+  const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{12,})");
+  
+  if (strongRegex.test(password)) {
+    meter.style.backgroundColor = "green";
+    meter.textContent = "Strong password";
+  } else if (password.length >= 8) {
+    meter.style.backgroundColor = "orange";
+    meter.textContent = "Medium password";
+  } else {
+    meter.style.backgroundColor = "red";
+    meter.textContent = "Weak password";
+  }
+}
+</script>

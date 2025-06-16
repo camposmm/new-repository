@@ -86,10 +86,24 @@ async function updatePassword(account_id, password) {
   return result.rows[0];
 }
 
+/**
+ * Get account name by ID
+ * @param {number} account_id - Account ID
+ * @returns {Object} Account name data
+ */
+async function getAccountNameById(account_id) {
+  const result = await pool.query(
+    "SELECT account_firstname, account_lastname FROM account WHERE account_id = $1",
+    [account_id]
+  );
+  return result.rows[0];
+}
+
 module.exports = {
   getAccountByEmail,
   getAccountById,
   registerAccount,
   updateAccount,
-  updatePassword
+  updatePassword,
+  getAccountNameById
 };
