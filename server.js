@@ -29,12 +29,12 @@ const staticRoute = require('./routes/static')
 
 // Before other middleware
 app.use((req, res, next) => {
-  if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === 'production') {
-    res.redirect(`https://${req.header('host')}${req.url}`);
-  } else {
-    next();
+  if (req.headers['x-forwarded-proto'] !== 'https' && process.env.NODE_ENV === 'production') {
+    return res.redirect(`https://${req.headers.host}${req.url}`);
   }
+  next();
 });
+
 // Parse request bodies
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
