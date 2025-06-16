@@ -89,11 +89,12 @@ async function accountLogin(req, res) {
       );
       
       // Set secure cookie
-      res.cookie("jwt", accessToken, { 
-        httpOnly: true, 
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
-      });
+      res.cookie("jwt", accessToken, {
+        httpOnly: true,
+        secure: true,  // Always true in production
+        sameSite: 'none',  // Required for cross-origin in production
+        maxAge: 3600000  // 1 hour expiration
+      })
       
       return res.redirect("/account");
     } else {
